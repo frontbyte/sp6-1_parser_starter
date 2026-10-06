@@ -11,6 +11,7 @@ function getSimpleAttributeValue(element, selector, attribute) {
     const attributeValue = pageElement.getAttribute(attribute).trim();
     return attributeValue;
 }
+
 /**
  * Получение числового значения цены и кода валюты из переданной строки типа: "₽34123"
  *Пример входных данных и вывода: "₽34123" => {value: 34123, currency: "RUB"}
@@ -35,6 +36,7 @@ function getPriceAndCurrency(priceWithCurrency) {
     }
     return { currency, price };
 }
+
 /**
  * Извлекает заголовок страницы без названия сайта
  * @returns {string}
@@ -163,6 +165,7 @@ function getProductTags() {
     }
     return productTags;
 }
+
 /**
  * Извлекает из страницы следующие значения:
  * Цена товара с учётом скидки — крупная незачёркнутая цифра.
@@ -196,6 +199,7 @@ function getProductPriceData() {
     productPriceData.discountPercent = `${discountPercent}%`;
     return productPriceData;
 }
+
 /**
  * Извлекает из страницы свойства товара — объект с ключами и значениями. В качестве ключей
  * взяты строки слева, а в качестве значений — строки справа в каждой строчке.
@@ -231,6 +235,7 @@ function getProductDescription() {
     }
     return descriptionNodeClone.innerHTML.trim();
 }
+
 /**
  * Извлекает данные карточки товара, который представлен на странице
  * @returns {Object}
@@ -249,21 +254,15 @@ function getPageProduct() {
     product.name = document.querySelector("h1").textContent;
     // Массивы бирок, категорий и скидок.
     product.tags = getProductTags();
-    // Извлечем данные о цене, цене без скидки, размере скидки в валюте и в процентах, валюте
-
-    // TODO сделать короче присваивая значения сразу свойствам объекта product
-
-    const { price, oldPrice, discount, discountPercent, currency } =
-        getProductPriceData();
-    // Цена товара с учётом скидки.
-    product.price = price;
-    // Цена товара без скидки — зачёркнута часть цены.
-    product.oldPrice = oldPrice;
-    // Размер скидки в валюте и в процентах.
-    product.discount = discount;
-    product.discountPercent = discountPercent;
-    // Валюта — символ перед товаром: $, € или ₽. Результат в виде кода валюты USD, EUR или RUB соответственно.
-    product.currency = currency;
+    // Извлечем данные о цене с учётом скидки, цене без скидки, размере скидки в валюте и в процентах,
+    // валюте  — символ перед товаром: $, € или ₽. Результат в виде кода валюты USD, EUR или RUB соответственно
+    ({
+        price: product.price,
+        oldPrice: product.oldPrice,
+        discount: product.discount,
+        discountPercent: product.discountPercent,
+        currency: product.currency,
+    } = getProductPriceData());
     // Свойства товара — объект с ключами и значениями.
     product.properties = getProductProperties();
     // Полное описание товара
@@ -271,7 +270,6 @@ function getPageProduct() {
     return product;
 }
 
-// console.log(suggested);
 /**
  * Извлекает массив карточек предложенных дополнительных товаров
  * @returns {Array<Object>}
@@ -292,6 +290,7 @@ function getPageSuggested() {
     });
     return suggested;
 }
+
 /**
  * Форматирует дату из вида "dd/mm/yyyy" => "dd.mm.yyyy"
  * @param {string} unformatedDate
@@ -301,6 +300,7 @@ function formateDate(unformatedDate) {
     const date = unformatedDate.split("/").join(".").trim();
     return date;
 }
+
 /**
  * Считает рейтинг отзыва (количество звезд в отзыве)
  * @param {Array} ratingArr
@@ -315,6 +315,7 @@ function getRating(ratingArr) {
     }, 0);
     return rating;
 }
+
 /**
  * Извлекает информацию об авторе отзыва: имя и ссылку на аватар
  * @param {Object} reviewCard
@@ -351,6 +352,7 @@ function getPageReviews() {
     });
     return reviews;
 }
+
 /**
  * Парсит страницу и выводит её содержимое в консоль в виде объеката, в котором содержатся
  * объект с информацией о метаданных, объект с информацией о товаре, массив с информацией
